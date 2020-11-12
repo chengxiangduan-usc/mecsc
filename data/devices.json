@@ -1,0 +1,152 @@
+{
+    "r1_01": {
+        "hobo": "01",
+        "garmin": "01",
+        "embrace": "01"
+    },
+    "r1_02": {
+        "hobo": "03",
+        "garmin": "13",
+        "embrace": "04"
+    },
+    "r1_03": {
+        "hobo": "04",
+        "garmin": "04",
+        "embrace": "05"
+    },
+    "r1_04": {
+        "hobo": "06",
+        "garmin": "06",
+        "embrace": "06"
+    },
+    "r1_05": {
+        "hobo": "07",
+        "garmin": "07",
+        "embrace": "07"
+    },
+    "r1_06": {
+        "hobo": "08",
+        "garmin": "08",
+        "embrace": "08"
+    },
+    "r1_07": {
+        "hobo": "09",
+        "garmin": "09",
+        "embrace": "09"
+    },
+    "r1_08": {
+        "hobo": "10",
+        "garmin": "10",
+        "embrace": "10"
+    },
+    "r1_09": {
+        "hobo": "11",
+        "garmin": "11",
+        "embrace": "11"
+    },
+    "r1_10": {
+        "hobo": "12",
+        "garmin": "12",
+        "embrace": "12"
+    },
+    "r2_01": {
+        "hobo": "01",
+        "garmin": "01",
+        "embrace": "01"
+    },
+    "r2_02": {
+        "hobo": "03",
+        "garmin": "13",
+        "embrace": "04"
+    },
+    "r2_03": {
+        "hobo": "04",
+        "garmin": "04",
+        "embrace": "05"
+    },
+    "r2_04": {
+        "hobo": "06",
+        "garmin": "06",
+        "embrace": "06"
+    },
+    "r2_05": {
+        "hobo": "07",
+        "garmin": "07",
+        "embrace": "07"
+    },
+    "r2_06": {
+        "hobo": "08",
+        "garmin": "08",
+        "embrace": "08"
+    },
+    "r2_07": {
+        "hobo": "09",
+        "garmin": "09",
+        "embrace": "09"
+    },
+    "r2_08": {
+        "hobo": "10",
+        "garmin": "10",
+        "embrace": "10"
+    },
+    "r2_09": {
+        "hobo": "11",
+        "garmin": "11",
+        "embrace": "11"
+    },
+    "r2_10": {
+        "hobo": "12",
+        "garmin": "12",
+        "embrace": "12"
+    },
+    "r3_01": {
+        "hobo": "01",
+        "garmin": "01",
+        "embrace": "01"
+    },
+    "r3_02": {
+        "hobo": "03",
+        "garmin": "13",
+        "embrace": "04"
+    },
+    "r3_03": {
+        "hobo": "04",
+        "garmin": "04",
+        "embrace": "05"
+    },
+    "r3_04": {
+        "hobo": "06",
+        "garmin": "06",
+        "embrace": "06"
+    },
+    "r3_05": {
+        "hobo": "07",
+        "garmin": "07",
+        "embrace": "07"
+    },
+    "r3_06": {
+        "hobo": "08",
+        "garmin": "08",
+        "embrace": "08"
+    },
+    "r3_07": {
+        "hobo": "09",
+        "garmin": "09",
+        "embrace": "09"
+    },
+    "r3_08": {
+        "hobo": "10",
+        "garmin": "10",
+        "embrace": "10"
+    },
+    "r3_09": {
+        "hobo": "11",
+        "garmin": "11",
+        "embrace": "11"
+    },
+    "r3_10": {
+        "hobo": "12",
+        "garmin": "12",
+        "embrace": "12"
+    }
+}
