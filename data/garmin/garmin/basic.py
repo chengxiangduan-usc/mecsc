@@ -36,6 +36,8 @@ class Garmin():
         else:
             timestamp = (messages[0].fields[1].value - datetime.datetime(1989, 12, 31, 0, 0)).total_seconds()
         data = []
+        last_timestamp_16 = -1
+        jinwei = 0
         for m in messages:
             skip=True
             if not hasattr(m, 'fields'):
@@ -46,8 +48,12 @@ class Garmin():
             for field in fields:
                 if field.name in allowed_fields:
                     if field.name=='timestamp_16':
+                        if field.value < last_timestamp_16:
+                            jinwei += 1
+                        last_timestamp_16 = field.value
+
                         # timestamp_16 = int(timestamp/2**16) * 2**16 + field.value
-                        timestamp_16 = (int(timestamp) & 0xffff0000) | field.value
+                        timestamp_16 = ((int(timestamp) & 0xffff0000) | field.value) + (0x10000) * jinwei
                         t_utc = datetime.datetime.utcfromtimestamp(631065600+timestamp_16)
                         mdata[field.name] = GarminTools().timezoneshift(t_utc, self.in_tz, self.out_tz)
                     elif field.name=='heart_rate':
@@ -108,6 +114,7 @@ class Garmin():
 
     def convert_all_days_to_intermediate_csv(self):
         dates = os.listdir(os.path.join(self.person, 'fit'))
+        dates = [date for date in dates if date !='.DS_Store']
         print(dates)
 
         for oneday in dates:
@@ -148,6 +155,7 @@ class Garmin():
 
     def rearrange_all_days_csv(self):
         dates = os.listdir(os.path.join(self.person, 'intermediate_csv'))
+        dates = [date for date in dates if date !='.DS_Store']
 
         for oneday in dates:
             self.rearrange_one_day_csv(oneday)
