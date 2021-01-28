@@ -20,6 +20,9 @@ class OptimalGroupTempreture():
         self.sensitivity = sensitivity
         self.defaultMinMaxRange = defaultMinMaxRange
         self.otdDF = None
+        self.optimalTargetTemperatureOTD = None
+        self.max_otd = None
+        self.min_otd = None
     
     def getTempreture(self, model='auto', sensitivePeoplePercentageLimit=0.1, sensitiveRange=2, ppd=0.1):
         """
@@ -96,23 +99,20 @@ class OptimalGroupTempreture():
         maxT = max([averageTs[i] + checkedtRanges[i] / 2 for i in range(len(checkedtRanges))])
 
         acceptableTs = []
+        max_otd = float('-inf')
+        min_otd = float('inf')
         for t10 in range(int(minT * 10), int(maxT * 10) + 1):
             t = t10 / 10
-            otd = 0
-            for x in rangeTs:
-                if t >= x[0][0] and t <= x[0][1]:
-                    otd += 0
-                elif t >= x[1][0] and t <= x[1][1]:
-                    otd += 1
-                elif t >= x[2][0] and t <= x[2][1]:
-                    otd += numberOfPeople + 1
-                else:
-                    otd = (numberOfPeople + 1) * 2
-            forFig.append([t, otd])
+            otd = self.computeOTD(t, numberOfPeople, rangeTs)
+            
+            forFig.append([t, otd, 1])
+            max_otd = max(max_otd, otd)
+            min_otd = min(min_otd, otd)
             if otd <= otdMax:
                 acceptableTs.append([t, otd])
         
-        self.otdDF = pd.DataFrame(forFig, columns=['temperature(°C)', 'otd'])
+        self.max_otd = max_otd
+        self.min_otd = min_otd
         
         if acceptableTs == []:
             return None
@@ -122,7 +122,25 @@ class OptimalGroupTempreture():
             if acceptableTs[i][1] == acceptableTs[0][1]:
                 maxValues.append(acceptableTs[i][0])
 #         print(acceptableTs)
-        return sum(maxValues) / len(maxValues)
+        opt_temp = sum(maxValues) / len(maxValues)
+        forFig.append([opt_temp, self.computeOTD(opt_temp, numberOfPeople, rangeTs), 20])
+        self.otdDF = pd.DataFrame(forFig, columns=['temperature(°C)', 'otd', 'isFinal'])
+        
+        self.optimalTargetTemperatureOTD = opt_temp
+        return opt_temp
+    
+    def computeOTD(self, t, numberOfPeople, rangeTs):
+        otd = 0
+        for x in rangeTs:
+            if t >= x[0][0] and t <= x[0][1]:
+                otd += 0
+            elif t >= x[1][0] and t <= x[1][1]:
+                otd += 1
+            elif t >= x[2][0] and t <= x[2][1]:
+                otd += numberOfPeople + 1
+            else:
+                otd = (numberOfPeople + 1) * 2
+        return otd
 
                 
     def otdDecideComfortness(self, checkedtRange, averageT, \
@@ -135,5 +153,8 @@ class OptimalGroupTempreture():
         return [rangeComfortable, rangeLittleUncomfortable, rangeUncomfortable]
     
     def drawOtdValue(self):
+        ct = sns.color_palette()
+        ct = [ct[2], ct[3]]
         sns.set_theme(style="darkgrid")
-        sns.relplot(x="temperature(°C)", y="otd", data=self.otdDF, hue="otd", palette="ch:r=-.5,l=.75", height=7, aspect=16/9)
+        sns.relplot(x="temperature(°C)", y="otd", data=self.otdDF, hue="isFinal", palette=ct, \
+                    size="isFinal", height=7, aspect=16/9)
