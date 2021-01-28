@@ -1,5 +1,11 @@
 import math
 
+import pandas as pd
+import numpy as np
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 class OptimalGroupTempreture():
     def __init__(self, minTs, maxTs, sensitivity=1.0, defaultMinMaxRange=1.0):
         """
@@ -13,8 +19,9 @@ class OptimalGroupTempreture():
         self.maxTs = maxTs
         self.sensitivity = sensitivity
         self.defaultMinMaxRange = defaultMinMaxRange
+        self.otdDF = None
     
-    def getTempreture(self, model='auto', sensitivePeoplePercentageLimit=0.1, sensitiveRange=2, ppd=0.5):
+    def getTempreture(self, model='auto', sensitivePeoplePercentageLimit=0.1, sensitiveRange=2, ppd=0.1):
         """
         model = 'auto', 'sensitive first', 'otd model'
         sensitivePeoplePercentage is > 0 and < 1
@@ -50,7 +57,6 @@ class OptimalGroupTempreture():
             targetTempreture = self.otdModel(checkedtRanges, avgTs, ppd)
         elif model == 'auto':
             lengthOfSensitivePeople = len([tRange for tRange in checkedtRanges if tRange <= sensitiveRange])
-            print('sensitive people percentage:', lengthOfSensitivePeople / len(checkedtRanges))
             if lengthOfSensitivePeople / len(checkedtRanges) >= sensitivePeoplePercentageLimit:
                 print('sensitive first model')
                 print('sensitive people percentage:', lengthOfSensitivePeople / len(checkedtRanges))
@@ -77,6 +83,7 @@ class OptimalGroupTempreture():
         return (1 / tRange) ** self.sensitivity
 
     def otdModel(self, checkedtRanges, averageTs, ppd):
+        forFig = []
         numberOfPeople = len(checkedtRanges)
         permitNumberOfUncomfortablePeople = math.floor(numberOfPeople * ppd)
         otdMax = (numberOfPeople - permitNumberOfUncomfortablePeople) * 1 + \
@@ -101,8 +108,12 @@ class OptimalGroupTempreture():
                     otd += numberOfPeople + 1
                 else:
                     otd = (numberOfPeople + 1) * 2
+            forFig.append([t, otd])
             if otd <= otdMax:
                 acceptableTs.append([t, otd])
+        
+        self.otdDF = pd.DataFrame(forFig, columns=['temperature(°C)', 'otd'])
+        
         if acceptableTs == []:
             return None
         acceptableTs.sort(key=lambda x: x[1])
@@ -122,3 +133,7 @@ class OptimalGroupTempreture():
         rangeLittleUncomfortable = [averageT - radius * littleUncomfortable[1], averageT + radius * littleUncomfortable[1]]
         rangeUncomfortable = [averageT - radius * uncomfortable[1], averageT + radius * uncomfortable[1]]
         return [rangeComfortable, rangeLittleUncomfortable, rangeUncomfortable]
+    
+    def drawOtdValue(self):
+        sns.set_theme(style="darkgrid")
+        sns.relplot(x="temperature(°C)", y="otd", data=self.otdDF, hue="otd", palette="ch:r=-.5,l=.75", height=7, aspect=16/9)
